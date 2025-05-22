@@ -1,5 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import axios from 'axios';
 
 // Mock user data
 export interface User {
@@ -17,13 +18,8 @@ interface AuthContextType {
   isLoading: boolean;
 }
 
-const mockUser: User = {
-  id: '12345',
-  name: 'Inba',
-  email: 'Inba@lls.com',
-  number: '15129489',
-  department: 'IT',
-};
+// API URL - update this with your Python Flask API URL when deployed
+const API_URL = 'http://localhost:5000';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -34,26 +30,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     // Check if user is already logged in
     const storedUser = localStorage.getItem('user');
-    if (storedUser) {
+    const token = localStorage.getItem('token');
+    
+    if (storedUser && token) {
       setUser(JSON.parse(storedUser));
+      // You could verify the token with the backend here
     }
     setIsLoading(false);
   }, []);
 
   const login = async (username: string, password: string): Promise<boolean> => {
-    // Mock authentication
-    if (username && password) {
-      // In a real app, we'd make an API call here
-      setUser(mockUser);
-      localStorage.setItem('user', JSON.stringify(mockUser));
-      return true;
+    try {
+      // Call the Python backend API
+      const response = await axios.post(`${API_URL}/api/login`, {
+        username,
+        password
+      });
+      
+      if (response.data.success) {
+        // Save the user data and token
+        setUser(response.data.user);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        localStorage.setItem('token', response.data.token);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Login error:', error);
+      return false;
     }
-    return false;
   };
 
   const logout = () => {
+    // Call logout API if needed
     setUser(null);
     localStorage.removeItem('user');
+    localStorage.removeItem('token');
   };
 
   return (
