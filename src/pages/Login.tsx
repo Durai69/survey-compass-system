@@ -45,7 +45,7 @@ const Login = () => {
     <div className="min-h-screen flex flex-col items-center justify-center bg-secondary">
       <div className="w-full max-w-md mx-auto">
         <div className="flex justify-center mb-8">
-          <Logo size="lg" />
+          <Logo size="lg" showTitle={true} />
         </div>
 
         <div className="text-center mb-12">
