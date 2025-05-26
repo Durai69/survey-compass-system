@@ -14,6 +14,7 @@ import DepartmentSelection from "./pages/DepartmentSelection";
 import SurveyForm from "./pages/SurveyForm";
 import SubmissionSuccess from "./pages/SubmissionSuccess";
 import ExcelExport from "./pages/ExcelExport";
+import RemarksResponse from "./pages/RemarksResponse";
 import Account from "./pages/Account";
 import Help from "./pages/Help";
 import NotFound from "./pages/NotFound";
@@ -50,6 +51,7 @@ const AppRoutes = () => {
       <Route path="/survey/:departmentId" element={<ProtectedRoute><SurveyForm /></ProtectedRoute>} />
       <Route path="/submission-success" element={<ProtectedRoute><SubmissionSuccess /></ProtectedRoute>} />
       <Route path="/excel" element={<ProtectedRoute><ExcelExport /></ProtectedRoute>} />
+      <Route path="/remarks-response" element={<ProtectedRoute><RemarksResponse /></ProtectedRoute>} />
       <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
       <Route path="/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
       <Route path="*" element={<NotFound />} />
