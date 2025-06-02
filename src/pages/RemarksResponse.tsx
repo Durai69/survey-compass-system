@@ -4,16 +4,20 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from '@/components/ui/carousel';
 import { useToast } from '@/components/ui/use-toast';
 import MainLayout from '@/components/MainLayout/MainLayout';
 
 interface IncomingFeedback {
+  id: string;
   fromDepartment: string;
   ratingGiven: number;
   remark: string;
 }
 
 interface OutgoingFeedback {
+  id: string;
   department: string;
   rating: number;
   yourRemark: string;
@@ -27,24 +31,67 @@ interface OutgoingFeedback {
 const RemarksResponse = () => {
   const { toast } = useToast();
   
-  // Mock incoming feedback data
-  const [incomingFeedback] = useState<IncomingFeedback>({
-    fromDepartment: 'Production',
-    ratingGiven: 2,
-    remark: 'Slow response to inventory requests'
-  });
-
-  // Mock outgoing feedback data
-  const [outgoingFeedback] = useState<OutgoingFeedback>({
-    department: 'QA Department',
-    rating: 2.0,
-    yourRemark: 'Delayed reports submission',
-    theirResponse: {
-      explanation: 'We were understaffed due to resignations',
-      actionPlan: 'Hiring 2 more analysts by next month',
-      responsiblePerson: 'Mr. Arjun'
+  // Mock multiple incoming feedback data
+  const [incomingFeedbackList] = useState<IncomingFeedback[]>([
+    {
+      id: '1',
+      fromDepartment: 'Production',
+      ratingGiven: 2,
+      remark: 'Slow response to inventory requests'
+    },
+    {
+      id: '2',
+      fromDepartment: 'Mktg IA',
+      ratingGiven: 3,
+      remark: 'Communication could be improved for better coordination'
+    },
+    {
+      id: '3',
+      fromDepartment: 'Planning',
+      ratingGiven: 1,
+      remark: 'Delays in processing our resource allocation requests'
     }
-  });
+  ]);
+
+  // Mock multiple outgoing feedback data
+  const [outgoingFeedbackList] = useState<OutgoingFeedback[]>([
+    {
+      id: '1',
+      department: 'QA Department',
+      rating: 2.0,
+      yourRemark: 'Delayed reports submission',
+      theirResponse: {
+        explanation: 'We were understaffed due to resignations',
+        actionPlan: 'Hiring 2 more analysts by next month',
+        responsiblePerson: 'Mr. Arjun'
+      }
+    },
+    {
+      id: '2',
+      department: 'Mktg IA',
+      rating: 3.5,
+      yourRemark: 'Good collaboration but needs faster turnaround',
+      theirResponse: {
+        explanation: 'Resource constraints limited our response time',
+        actionPlan: 'Implementing new workflow management system',
+        responsiblePerson: 'Ms. Priya'
+      }
+    },
+    {
+      id: '3',
+      department: 'Planning',
+      rating: 4.0,
+      yourRemark: 'Excellent strategic planning support',
+      theirResponse: {
+        explanation: 'Thank you for the positive feedback',
+        actionPlan: 'Continue maintaining current service levels',
+        responsiblePerson: 'Mr. Raj'
+      }
+    }
+  ]);
+
+  const [selectedIncomingIndex, setSelectedIncomingIndex] = useState(0);
+  const [selectedOutgoingIndex, setSelectedOutgoingIndex] = useState(0);
 
   // Form state for incoming feedback response
   const [responseForm, setResponseForm] = useState({
@@ -87,27 +134,49 @@ const RemarksResponse = () => {
     });
   };
 
+  const currentIncomingFeedback = incomingFeedbackList[selectedIncomingIndex];
+  const currentOutgoingFeedback = outgoingFeedbackList[selectedOutgoingIndex];
+
   return (
-    <MainLayout title="Remarks & Response">
+    <MainLayout title="Action Plan">
       <div className="container mx-auto px-4 py-6 max-w-6xl">
         {/* Incoming Feedback Section */}
         <div className="mb-8">
           <h2 className="text-2xl font-semibold text-gray-800 mb-6">Incoming Feedback</h2>
+          
+          {/* Department Navigation Tabs */}
+          <div className="mb-6">
+            <div className="flex flex-wrap gap-2 mb-4">
+              {incomingFeedbackList.map((feedback, index) => (
+                <button
+                  key={feedback.id}
+                  onClick={() => setSelectedIncomingIndex(index)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                    selectedIncomingIndex === index
+                      ? 'bg-purple-600 text-white shadow-md'
+                      : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
+                  }`}
+                >
+                  {feedback.fromDepartment}
+                </button>
+              ))}
+            </div>
+          </div>
           
           <Card className="bg-green-50 border-green-200 mb-6">
             <CardContent className="p-6">
               <div className="space-y-3">
                 <div className="flex flex-col sm:flex-row sm:items-center">
                   <span className="font-medium text-gray-700 min-w-[140px]">From Department:</span>
-                  <span className="text-gray-800">{incomingFeedback.fromDepartment}</span>
+                  <span className="text-gray-800">{currentIncomingFeedback.fromDepartment}</span>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center">
                   <span className="font-medium text-gray-700 min-w-[140px]">Rating Given:</span>
-                  <span className="text-gray-800">{incomingFeedback.ratingGiven}</span>
+                  <span className="text-gray-800">{currentIncomingFeedback.ratingGiven}</span>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-start">
                   <span className="font-medium text-gray-700 min-w-[140px]">Remark:</span>
-                  <span className="text-gray-800">"{incomingFeedback.remark}"</span>
+                  <span className="text-gray-800">"{currentIncomingFeedback.remark}"</span>
                 </div>
               </div>
             </CardContent>
@@ -177,17 +246,36 @@ const RemarksResponse = () => {
         <div>
           <h2 className="text-2xl font-semibold text-gray-800 mb-6">Outgoing Feedback</h2>
           
+          {/* Department Navigation Tabs */}
+          <div className="mb-6">
+            <div className="flex flex-wrap gap-2 mb-4">
+              {outgoingFeedbackList.map((feedback, index) => (
+                <button
+                  key={feedback.id}
+                  onClick={() => setSelectedOutgoingIndex(index)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                    selectedOutgoingIndex === index
+                      ? 'bg-purple-600 text-white shadow-md'
+                      : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
+                  }`}
+                >
+                  {feedback.department}
+                </button>
+              ))}
+            </div>
+          </div>
+          
           <Card className="bg-green-50 border-green-200">
             <CardContent className="p-6">
               <div className="space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center">
                   <span className="font-medium text-gray-700 min-w-[120px]">You rated:</span>
-                  <span className="text-gray-800">{outgoingFeedback.department} - {outgoingFeedback.rating}</span>
+                  <span className="text-gray-800">{currentOutgoingFeedback.department} - {currentOutgoingFeedback.rating}</span>
                 </div>
                 
                 <div className="flex flex-col sm:flex-row sm:items-start">
                   <span className="font-medium text-gray-700 min-w-[120px]">Your Remark:</span>
-                  <span className="text-gray-800">"{outgoingFeedback.yourRemark}"</span>
+                  <span className="text-gray-800">"{currentOutgoingFeedback.yourRemark}"</span>
                 </div>
 
                 <div className="mt-6">
@@ -196,17 +284,17 @@ const RemarksResponse = () => {
                   <div className="space-y-4 pl-4">
                     <div>
                       <span className="font-medium text-gray-700">Explanation: </span>
-                      <span className="text-gray-800">{outgoingFeedback.theirResponse.explanation}</span>
+                      <span className="text-gray-800">{currentOutgoingFeedback.theirResponse.explanation}</span>
                     </div>
                     
                     <div>
                       <span className="font-medium text-gray-700">Action Plan: </span>
-                      <span className="text-gray-800">{outgoingFeedback.theirResponse.actionPlan}</span>
+                      <span className="text-gray-800">{currentOutgoingFeedback.theirResponse.actionPlan}</span>
                     </div>
                     
                     <div>
                       <span className="font-medium text-gray-700">Responsible Person: </span>
-                      <span className="text-gray-800">{outgoingFeedback.theirResponse.responsiblePerson}</span>
+                      <span className="text-gray-800">{currentOutgoingFeedback.theirResponse.responsiblePerson}</span>
                     </div>
                   </div>
                 </div>
