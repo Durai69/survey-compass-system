@@ -51,6 +51,7 @@ const AppRoutes = () => {
       <Route path="/survey/:departmentId" element={<ProtectedRoute><SurveyForm /></ProtectedRoute>} />
       <Route path="/submission-success" element={<ProtectedRoute><SubmissionSuccess /></ProtectedRoute>} />
       <Route path="/excel" element={<ProtectedRoute><ExcelExport /></ProtectedRoute>} />
+      <Route path="/action-plan" element={<ProtectedRoute><RemarksResponse /></ProtectedRoute>} />
       <Route path="/remarks-response" element={<ProtectedRoute><RemarksResponse /></ProtectedRoute>} />
       <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
       <Route path="/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
